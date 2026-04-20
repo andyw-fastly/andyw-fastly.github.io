@@ -55,6 +55,29 @@
             <p>Current Status: <span class="status-tag">Cached at Edge</span></p>
             <p>Update this text in GitHub to test Fastly's Instant Purge.</p>
         </section>
+
+        <section id="csp-demo">
+            <h2>4. Client-Side Protection (CSP)</h2>
+            <p>Fastly is currently monitoring this page for third-party script activity. Below is the inventory of what is being loaded:</p>
+            
+            <div style="background: #fff3f3; padding: 15px; border-left: 5px solid #d32f2f; margin: 10px 0;">
+                <strong>Live Script Inventory:</strong>
+                <ul id="script-list">
+                    <li>Google Fonts (Typography)</li>
+                    <li>jsDelivr (Utility Library)</li>
+                    <li style="color: #d32f2f;"><strong>Unrecognized-Tracker.js (Suspicious!)</strong></li>
+                </ul>
+            </div>
+
+            <div class="cc-area" style="border: 1px dashed #ccc; padding: 10px;">
+                <label>Sensitive Data Field (e.g., Credit Card):</label>
+                <input type="text" placeholder="#### #### #### ####" id="cc-input" disabled>
+                <small>Client-Side Protection prevents unauthorized scripts from "scraping" this field.</small>
+            </div>
+        </section>
+
+        <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+        <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
     </main>
 
     <script src="script.js"></script>
