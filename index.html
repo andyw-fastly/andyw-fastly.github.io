@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fastly Demo Origin</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Fastly Feature Showcase</h1>
+        <p>Origin Hosted on GitHub Pages</p>
+    </header>
+
+    <main>
+        <section id="image-demo">
+            <h2>1. Image Optimizer</h2>
+            <p>This image is served from GitHub. Add <code>?width=400&optimize=medium</code> to the URL in Fastly to see it change.</p>
+            <img src="demo-image.jpg" alt="High res demo" class="demo-img">
+        </section>
+
+        <section id="login-demo">
+            <h2>2. NGWAF & Bot Detection</h2>
+            <p>Try a SQLi attack in the username or use a script to spam the Login button.</p>
+            <form id="fakeLoginForm">
+                <input type="text" name="username" placeholder="Username (Try SQLi)" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <div id="message"></div>
+        </section>
+
+        <section id="cache-demo">
+            <h2>3. Caching</h2>
+            <p>Current Status: <span class="status-tag">Cached at Edge</span></p>
+            <p>Update this text in GitHub to test Fastly's Instant Purge.</p>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
