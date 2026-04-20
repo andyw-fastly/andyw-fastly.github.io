@@ -16,9 +16,27 @@
     <main>
         <section id="image-demo">
             <h2>1. Image Optimizer</h2>
-            <p>This image is served from GitHub. Add <code>?width=400&optimize=medium</code> to the URL in Fastly to see it change.</p>
-            <img src="demo-image.jpg" alt="High res demo" class="demo-img">
+            <div class="controls">
+                <button onclick="updateImage('width=300')">Small (300px)</button>
+                <button onclick="updateImage('width=800&brightness=-30')">Dark Mode (800px)</button>
+                <button onclick="updateImage('width=600&blur=20')">Blurred (600px)</button>
+                <button onclick="location.reload()">Reset</button>
+            </div>
+            <div class="image-container">
+                <img id="target-img" src="demo-image.jpg" alt="Fastly IO Demo" class="demo-img">
+            </div>
+            <p id="url-display">URL: <code>demo-image.jpg</code></p>
         </section>
+
+        <script>
+            function updateImage(params) {
+                const img = document.getElementById('target-img');
+                const display = document.getElementById('url-display');
+                const newSrc = `demo-image.jpg?${params}&cache=${Math.random()}`; // Cache bust for demo
+                img.src = newSrc;
+                display.innerHTML = `URL: <code>${newSrc}</code>`;
+            }
+        </script>
 
         <section id="login-demo">
             <h2>2. NGWAF & Bot Detection</h2>
