@@ -98,6 +98,37 @@
             </div>
         </section>
 
+        <section id="edge-compute-demo" class="standard-theme">
+            <h2>6. Edge Compute: A/B Testing</h2>
+            <p>Current Status: <strong id="tier-status">Standard Experience</strong></p>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button onclick="setTier('beta')" style="background: #4a90e2;">Enable Beta Tier</button>
+                <button onclick="setTier('standard')" style="background: #666;">Reset to Standard</button>
+            </div>
+            
+            <p><small>Clicking these buttons sets a cookie. Fastly Compute reads that cookie and modifies the HTML before it reaches your browser.</small></p>
+        </section>
+
+        <style>
+            /* These classes are swapped by Fastly Compute at the Edge */
+            .standard-theme { border-left: 5px solid #ccc; transition: all 0.3s; }
+            .beta-theme { 
+                border-left: 5px solid #4a90e2 !important; 
+                background: #eef6ff !important;
+                box-shadow: 0 4px 15px rgba(74,144,226,0.3);
+            }
+        </style>
+
+        <script>
+            function setTier(tier) {
+                // Set the cookie for the Fastly Edge to read
+                document.cookie = `user_tier=${tier}; path=/; max-age=3600`;
+                // Reload to let Fastly process the new cookie
+                window.location.reload();
+            }
+        </script>
+
         <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
         <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
     </main>
