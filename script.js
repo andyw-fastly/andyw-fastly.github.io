@@ -42,3 +42,29 @@ async function simulateApiTraffic() {
 
 // Run on load
 window.addEventListener('DOMContentLoaded', simulateApiTraffic);
+
+async function triggerManualApi() {
+    const method = document.getElementById('api-method').value;
+    const path = document.getElementById('api-path').value;
+    const log = document.getElementById('api-log');
+
+    if (!path.startsWith('/')) {
+        alert("Path must start with /");
+        return;
+    }
+
+    log.innerHTML = `Sending <strong>${method}</strong> to <code>${path}</code>...`;
+
+    try {
+        const response = await fetch(path, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: method !== 'GET' ? JSON.stringify({ demo: "data" }) : null
+        });
+
+        // We show the status. Even a 404 is "Discovered" by Fastly!
+        log.innerHTML = `Sent: <strong>${method}</strong> ${path}<br>Response: <span style="color: ${response.ok ? 'green' : 'orange'}">${response.status} ${response.statusText}</span><br><small>Check Fastly API Discovery for this new path!</small>`;
+    } catch (err) {
+        log.innerHTML = `<span style="color: red;">Error: ${err.message}</span>`;
+    }
+}

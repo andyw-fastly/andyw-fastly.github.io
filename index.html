@@ -76,17 +76,26 @@
                 <small>Client-Side Protection prevents unauthorized scripts from "scraping" this field.</small>
             </div>
         </section>
-        
+
         <section id="api-discovery">
-            <h2>5. API Discovery & Inventory</h2>
-            <p>Behind the scenes, this page is making calls to multiple API versions.</p>
-            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3;">
-                <strong>Endpoints being "Discovered":</strong>
-                <code>/api/v2/config.json</code> (Production)<br>
-                <code>/api/v1/telemetry/report</code> <span style="color:orange;">(Shadow API)</span><br>
-                <code>/api/deprecated/user-stats</code> <span style="color:red;">(Zombie API)</span>
+            <h2>5. Interactive API Discovery</h2>
+            <p>Type a custom path below to simulate a new API endpoint. Fastly will detect the traffic and add it to the Discovery dashboard.</p>
+            
+            <div class="api-explorer" style="background: #f0f7ff; padding: 20px; border-radius: 8px; border: 1px solid #2196f3;">
+                <div style="display: flex; gap: 10px;">
+                    <select id="api-method" style="padding: 10px; border-radius: 4px; border: 1px solid #ccc;">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                    <input type="text" id="api-path" placeholder="/api/v1/custom-endpoint" style="flex-grow: 1; margin: 0;">
+                    <button onclick="triggerManualApi()" style="margin: 0;">Call API</button>
+                </div>
+                <p id="api-log" style="font-family: monospace; font-size: 0.85rem; margin-top: 15px; color: #555;">
+                    Waiting for input...
+                </p>
             </div>
-            <p><small>Fastly will automatically map these paths, methods, and traffic patterns in the Security console.</small></p>
         </section>
 
         <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
