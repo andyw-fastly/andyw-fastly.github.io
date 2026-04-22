@@ -23,3 +23,22 @@ document.getElementById('fakeLoginForm').addEventListener('submit', function(e) 
         messageDiv.innerText = "Connection error.";
     });
 });
+
+
+// Function to simulate API traffic for Fastly Discovery
+async function simulateApiTraffic() {
+    // 1. The "Official" API
+    fetch('/api/v2/config.json');
+
+    // 2. The "Shadow" API (Hidden tracking/telemetry)
+    fetch('/api/v1/telemetry/report', {
+        method: 'POST',
+        body: JSON.stringify({ event: 'page_load', ts: Date.now() })
+    });
+
+    // 3. The "Legacy" API (An old endpoint we forgot to delete)
+    fetch('/api/deprecated/user-stats');
+}
+
+// Run on load
+window.addEventListener('DOMContentLoaded', simulateApiTraffic);
