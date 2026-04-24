@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | Acme Premium Electronics</title>
+    <title>Fastly CSP Demo | Checkout</title>
     <style>
         :root {
             --primary-blue: #0052cc;
@@ -11,227 +11,126 @@
             --bg-gray: #f4f5f7;
             --border-color: #dfe1e6;
             --text-dark: #172b4d;
-            --success-green: #36b37e;
+            --danger-red: #ff5252;
+            --safe-green: #36b37e;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-gray);
-            color: var(--text-dark);
-            margin: 0;
-            padding: 20px;
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-gray); color: var(--text-dark); display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        /* Control Panel */
+        .demo-controls {
+            background: #fff;
+            padding: 15px 25px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             display: flex;
-            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid var(--border-color);
         }
 
-        .checkout-container {
-            width: 100%;
-            max-width: 1000px;
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
-        }
+        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--fastly-orange); }
+        input:checked + .slider:before { transform: translateX(26px); }
 
-        .main-content {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .sidebar {
-            background: #fafbfc;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            height: fit-content;
-        }
-
-        h1 { font-size: 24px; border-bottom: 2px solid var(--bg-gray); padding-bottom: 15px; margin-top: 0; }
-        h2 { font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; }
-
+        .checkout-card { background: white; width: 100%; max-width: 500px; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h1 { font-size: 22px; margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .form-group { margin-bottom: 15px; }
-
-        label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: #6b778c;
-            text-transform: uppercase;
+        label { display: block; font-size: 11px; font-weight: bold; color: #6b778c; margin-bottom: 5px; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 4px; box-sizing: border-box; }
+        
+        .btn-submit { background: var(--primary-blue); color: white; border: none; padding: 15px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        /* Terminal */
+        .terminal {
+            background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 13px; width: 100%; max-width: 500px; margin-top: 20px;
+            height: 150px; overflow-y: auto; border-left: 4px solid #555;
         }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 2px rgba(0,82,204,0.1);
-        }
-
-        .card-details {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 10px;
-        }
-
-        .btn-submit {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 16px;
-            width: 100%;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 20px;
-            transition: background 0.2s;
-        }
-
-        .btn-submit:hover { background-color: #0065ff; }
-
-        /* FASTLY PROTECTION SIMULATION STYLES */
-        .simulation-console {
-            margin-top: 40px;
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 13px;
-            border-left: 5px solid var(--fastly-orange);
-        }
-
-        .console-header {
-            color: var(--fastly-orange);
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .status-pill {
-            background: rgba(255, 69, 0, 0.2);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-        }
-
-        .log-entry { margin-bottom: 5px; }
-        .log-warn { color: #ce9178; }
-        .log-blocked { color: #f44336; font-weight: bold; }
-
-        .order-summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
-
-        @media (max-width: 800px) {
-            .checkout-container { grid-template-columns: 1fr; }
-        }
+        .term-success { color: var(--safe-green); }
+        .term-fail { color: var(--danger-red); font-weight: bold; }
+        .term-warn { color: #ffcc00; }
     </style>
 </head>
 <body>
 
-    <div class="checkout-container">
-        <div class="main-content">
-            <h1>Secure Checkout</h1>
-            
-            <section>
-                <h2>1. Shipping Address</h2>
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="cust-name" value="Jane Doe">
-                </div>
-                <div class="form-group">
-                    <label>Street Address</label>
-                    <input type="text" value="123 Security Blvd">
-                </div>
-            </section>
+    <div class="demo-controls">
+        <strong>Fastly Protection:</strong>
+        <span id="status-label" style="color: #888; font-weight: bold;">DISABLED</span>
+        <label class="switch">
+            <input type="checkbox" id="protection-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
 
-            <section style="margin-top: 30px;">
-                <h2>2. Payment Information</h2>
-                <div class="form-group">
-                    <label>Card Number</label>
-                    <input type="text" id="cc-num" placeholder="4111 2222 3333 4444">
-                </div>
-                <div class="card-details">
-                    <div class="form-group">
-                        <label>Expiry</label>
-                        <input type="text" placeholder="12/28">
-                    </div>
-                    <div class="form-group">
-                        <label>CVV</label>
-                        <input type="password" id="cc-cvv" placeholder="***">
-                    </div>
-                </div>
-            </section>
-
-            <button class="btn-submit" id="submit-btn">Complete Purchase ($1,249.00)</button>
-
-            <div class="simulation-console" id="console">
-                <div class="console-header">
-                    <span>FASTLY CLIENT-SIDE PROTECTION: REAL-TIME LOGS</span>
-                    <span class="status-pill">MONITORING ACTIVE</span>
-                </div>
-                <div class="log-entry">> Initializing script inventory...</div>
-                <div class="log-entry">> 12 third-party scripts identified.</div>
-                <div id="dynamic-logs"></div>
-            </div>
+    <div class="checkout-card">
+        <h1>Secure Checkout</h1>
+        <div class="form-group">
+            <label>Cardholder Name</label>
+            <input type="text" value="Jane Doe" id="card-name">
         </div>
-
-        <div class="sidebar">
-            <h2>Order Summary</h2>
-            <div class="order-summary-item">
-                <span>Pro Laptop 16"</span>
-                <span>$1,199.00</span>
-            </div>
-            <div class="order-summary-item">
-                <span>Shipping</span>
-                <span>FREE</span>
-            </div>
-            <div class="order-summary-item">
-                <span>Tax</span>
-                <span>$50.00</span>
-            </div>
-            <hr style="border: none; border-top: 1px solid var(--border-color); margin: 15px 0;">
-            <div class="order-summary-item" style="font-weight: bold; font-size: 18px;">
-                <span>Total</span>
-                <span>$1,249.00</span>
-            </div>
+        <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" id="cc-num" placeholder="4111 2222 3333 4444">
         </div>
+        <button class="btn-submit" id="buy-btn">Purchase $1,249.00</button>
+    </div>
+
+    <div class="terminal" id="terminal">
+        <div>> System ready. Monitoring 14 third-party scripts...</div>
     </div>
 
     <script>
-        // DEMO INTERACTION SCRIPT
-        const submitBtn = document.getElementById('submit-btn');
-        const logs = document.getElementById('dynamic-logs');
+        const toggle = document.getElementById('protection-toggle');
+        const statusLabel = document.getElementById('status-label');
+        const terminal = document.getElementById('terminal');
+        const buyBtn = document.getElementById('buy-btn');
 
-        submitBtn.addEventListener('click', () => {
-            const cc = document.getElementById('cc-num').value || "4111222233334444";
-            
-            // 1. Simulate the "Attack"
-            logs.innerHTML += `<div class="log-entry log-warn">> [ALERT] Script 'analytics-helper.js' is accessing '#cc-num' value...</div>`;
-            
+        // Toggle Visuals
+        toggle.addEventListener('change', () => {
+            if(toggle.checked) {
+                statusLabel.innerText = "ENABLED";
+                statusLabel.style.color = "var(--fastly-orange)";
+                log("Fastly CSP Policy deployed to edge.", "term-success");
+                log("Enforced: script-src 'self'; connect-src 'self';", "term-success");
+            } else {
+                statusLabel.innerText = "DISABLED";
+                statusLabel.style.color = "#888";
+                log("Protection removed. Running in 'Audit Only' mode.", "term-warn");
+            }
+        });
+
+        function log(msg, className = "") {
+            const div = document.createElement('div');
+            div.className = className;
+            div.innerHTML = `> ${msg}`;
+            terminal.appendChild(div);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // --- THE SIMULATION ---
+        buyBtn.addEventListener('click', () => {
+            const ccData = document.getElementById('cc-num').value || "NO_DATA";
+            log("Submit clicked. Processing transaction...");
+
+            // Simulate a malicious 3rd-party script (e.g. a compromised chatbot)
             setTimeout(() => {
-                logs.innerHTML += `<div class="log-entry log-warn">> [ALERT] Unauthorized data exfiltration attempt to 'https://evil-attacker.ru/collect'</div>`;
+                log("Malicious script 'customer-chat.js' attempting exfiltration...", "term-warn");
                 
-                // 2. Simulate Fastly Blocking the action
-                setTimeout(() => {
-                    logs.innerHTML += `<div class="log-blocked">> [BLOCK] Fastly CSP Policy blocked network request to 'evil-attacker.ru'. Data protected.</div>`;
-                    alert("DEMO: Fastly Client-Side Protection detected and blocked an unauthorized script from stealing your credit card data!");
-                }, 800);
-            }, 800);
+                if (toggle.checked) {
+                    // FASTLY PROTECTION ON
+                    log("ACTION BLOCKED: connect-src violation detected.", "term-fail");
+                    log("Fastly blocked request to 'api.evil-collector.io'", "term-fail");
+                    alert("🛡️ Fastly intercepted an attack! Your data is safe.");
+                } else {
+                    // FASTLY PROTECTION OFF
+                    log("EXFILTRATION SUCCESSFUL: Data sent to evil-collector.io", "term-fail");
+                    alert("❌ ATTACK SUCCESS: Your credit card (" + ccData + ") was stolen by the malicious script because protection was OFF.");
+                }
+            }, 1000);
         });
     </script>
 </body>
