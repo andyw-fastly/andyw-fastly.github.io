@@ -1,0 +1,8 @@
+{
+  "status": "deprecated",
+  "migration_date": "2026-12-31",
+  "stats": {
+    "usage_count": 450,
+    "active": false
+  }
+}

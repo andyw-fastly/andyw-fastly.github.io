@@ -1,0 +1,5 @@
+{
+  "maintenance_mode": false,
+  "allowed_regions": ["US", "EU", "APAC"],
+  "version": "1.4.2-stable"
+}
